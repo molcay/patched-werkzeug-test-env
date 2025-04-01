@@ -1,0 +1,10 @@
+__pycache__
+uploads/
+*.pyc
+
+old/
+test-files/
+create_test_files.py
+
+**/uploads/
+**/.venv/

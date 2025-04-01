@@ -1,0 +1,16 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Upload Form [{ name }]</title></head>
+<body>
+    <h3>Form for " { name } v{ werkzeug_version }"</h3>
+    <div>
+        <pre>{ packages }</pre>
+    </div>
+    <form action="/form" method="post" enctype="multipart/form-data">
+        <input type="file" name="file"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+            

@@ -1,0 +1,2 @@
+Werkzeug-patched==2.2.4
+gunicorn==21.0.0

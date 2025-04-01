@@ -1,0 +1,2 @@
+Werkzeug==2.3.8
+gunicorn==21.0.0
