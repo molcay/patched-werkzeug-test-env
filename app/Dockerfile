@@ -24,4 +24,4 @@ EXPOSE ${PORT}
 
 # Run the application
 # CMD ["python", "app.py"]
-CMD ["sh", "-c", "gunicorn app:application --bind 0.0.0.0:${PORT} --workers 1 --timeout 7200"]
+CMD ["sh", "-c", "gunicorn app:application -c gunicorn_conf.py"]

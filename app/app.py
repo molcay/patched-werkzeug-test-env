@@ -10,6 +10,7 @@ from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.middleware.shared_data import SharedDataMiddleware
 from werkzeug.utils import redirect
 from werkzeug.formparser import parse_form_data
+from werkzeug.local import LocalStack, LocalProxy
 
 ENV_NAME = os.getenv('ENV_NAME')
 PORT = int(os.getenv('PORT'))
@@ -19,6 +20,9 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname).1s] [%(process)d] - %(message)s"
 )
 logger = logging.getLogger(ENV_NAME)
+
+_request_context = LocalStack()
+request = LocalProxy(_request_context)
 
 
 def _get_packages():
@@ -40,10 +44,16 @@ DEFAULT_CONTEXT = {
     "packages": "\n".join([f"{p.name}=={p.version}" for p in packages]),
 }
 
+
 def application(environ, start_response):
     request = Request(environ)
-    response = dispatch_request(request)
-    return response(environ, start_response)
+    _request_context.push(request)  # Push the request onto the context stack
+    try:
+        response = dispatch_request(request)
+        return response(environ, start_response)
+    finally:
+        _request_context.pop()
+
 
 def dispatch_request(request):
     adapter = url_map.bind_to_environ(request.environ)
@@ -53,7 +63,8 @@ def dispatch_request(request):
     except HTTPException as e:
         return e
 
-def render_template(template_name, **context):
+
+def render_template(template_name, headers = None, **context):
     template_path = os.path.join(os.path.dirname(__file__), 'templates', template_name)
     with open(template_path, 'r') as f:
         template = f.read()
@@ -61,7 +72,8 @@ def render_template(template_name, **context):
     current_context = {**DEFAULT_CONTEXT, **context}
     for key, value in current_context.items():
         template = template.replace(f'{{ {key} }}', str(value))
-    return Response(template, mimetype='text/html')
+    return Response(template, mimetype='text/html', headers=headers)
+
 
 class views:
     def on_index(request):
@@ -77,6 +89,7 @@ class views:
             elapsed_time_for_parse_form_data = end_time - start_time
             if 'file' in files:
                 file_storage = files['file']
+                headers = (('filename', file_storage.filename),)
                 # basic check to ensure file has a name
                 if file_storage.filename:
                     # Very basic handling, for real app, save to a secure location, check file type, etc.
@@ -84,10 +97,10 @@ class views:
                     file_storage.save(os.path.join(os.path.dirname(__file__), 'uploads', file_storage.filename))
                     end_time = time.process_time()
                     logger.info('File: "%s" parse_form_data() tooks %.4f, file_storage.save() tooks %.4f', file_storage.filename, elapsed_time_for_parse_form_data, end_time - start_time)
-                    return render_template('form.html', message="File uploaded successfully.")
+                    return render_template('form.html', headers=headers, message="File uploaded successfully.")
                 else:
                     logger.warning('File: "%s" Failed!', file_storage.filename)
-                    return render_template('form.html', message="File upload failed, no filename provided.")
+                    return render_template('form.html', headers=headers, message="File upload failed, no filename provided.")
 
             else:
                 logger.warning('No File Provided!')

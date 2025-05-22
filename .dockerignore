@@ -4,6 +4,7 @@ uploads/
 
 old/
 test-files/
+profiler/
 create_test_files.py
 
 **/uploads/

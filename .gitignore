@@ -3,3 +3,4 @@ logs/*.log
 test-files/
 .venv/
 .idea/
+profiler/
