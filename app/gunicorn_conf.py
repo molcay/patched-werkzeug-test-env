@@ -6,8 +6,6 @@ import os
 import time
 from pathlib import Path
 
-# import multiprocessing
-
 
 PORT = os.environ.get("PORT")
 ENV_NAME = os.environ.get("ENV_NAME")
@@ -82,7 +80,7 @@ def worker_abort(worker):
 
 bind = f"0.0.0.0:{PORT}"
 workers = 1 # multiprocessing.cpu_count() * 2 + 1
-timeout = 7200 # 28800
+timeout = 180 # 28800
 # worker_connections = 1000
 # logconfig = 'gunicorn_logging.conf'
 # limit_request_field_size = 32768
