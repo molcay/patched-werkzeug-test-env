@@ -23,8 +23,8 @@ def _get_version(line):
 
 
 def _calculate_duration(end_time, start_time):
-    end_time_object = datetime.strptime(f"2025-01-01 {end_time}", '%Y-%m-%d %H:%M:%S')
-    start_time_object = datetime.strptime(f"2025-01-01 {start_time}", '%Y-%m-%d %H:%M:%S')
+    end_time_object = datetime.strptime(f"2025-05-29 {end_time}", '%Y-%m-%d %H:%M:%S')
+    start_time_object = datetime.strptime(f"2025-05-29 {start_time}", '%Y-%m-%d %H:%M:%S')
     return round((end_time_object - start_time_object).total_seconds())
 
 
