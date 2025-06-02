@@ -21,7 +21,7 @@ environments = [
         'port': 9008,
     },
     {
-        "version": 'v2.2.4 (patched)',
+        "version": 'v2.2.5 (patched)',
         'port': 8000,
     },
 ]
@@ -64,7 +64,7 @@ def execute(environment, filepath):
 
 def main():
     prefixes = ['na', 'cr', 'lf', 'crlf', 'lfcr']
-    for prefix in prefixes[:1]:
+    for prefix in prefixes[:]:
         for i in range(7, 9):
             filepath = f'test-files/{prefix}_10chars_{i}.txt'
             for environment in environments:
